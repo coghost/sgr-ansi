@@ -38,10 +38,10 @@ k: black, r: red, g: green, y: yellow b: blue, m: magenta, c: cyan, w: white
 
 
 ```python
-import ct
+import sgr_ansi as echo
 
-ct.BIg()
-ct.BIg('I love you 3 thousand times')
+echo.BIg()
+echo.BIg('I love you 3 thousand times')
 ```
 
 ## run demo
@@ -49,5 +49,5 @@ ct.BIg('I love you 3 thousand times')
 > just run demo.py to check all available styles
 
 ```shell
-python ct/demo.py -h
+python sgr_ansi/demo.py -h
 ```

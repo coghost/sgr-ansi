@@ -56,7 +56,7 @@ def __reg_styles(styles, max_length, iter_type='combinations'):
     return _reg
 
 
-def __stylish(*args, styles='B', end='', sep='') -> None:
+def __stylish(*args, styles='B', end='', sep='', show=True):
     orig_styles = styles
     alias = '-'.join([HELPER.get(x, '') for x in styles])
 
@@ -78,6 +78,8 @@ def __stylish(*args, styles='B', end='', sep='') -> None:
 
     end = end or prt_style['end']
     sep = sep or prt_style['sep']
+    if not show:
+        return ''.join([f'{__CSI__}{styles};{colors}', *_string, f'{__CSI__}{__RESET__}'])
     print(f'{__CSI__}{styles};{colors}', end='', sep='')
     print(*_string, end='', sep=sep)
     print(f'{__CSI__}{__RESET__}', end=end, sep='')

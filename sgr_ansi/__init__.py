@@ -1,6 +1,6 @@
-from ct.ansi8 import *
+from sgr_ansi.ansi8 import *
 
-VERSION = '0.0.1'
+VERSION = '0.0.3'
 # use hard registered to avoid annoy warnings: `cannot find reference`
 hard_registered = [
     'B', 'D', 'I', 'S', 'U',

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from ct import VERSION
+from sgr_ansi import VERSION
 
 setup(
     name='sgr-ansi',
