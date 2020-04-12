@@ -17,6 +17,9 @@ setup(
     long_description_content_type="text/markdown",
     license='GPL',
     install_requires=[],
+    entry_points={
+        'console_scripts': ['sgransi=sgr_ansi.demo:main'],
+    },
     project_urls={
         'Bug Reports': 'https://github.com/coghost/sgr-ansi/issues',
         'Source': 'https://github.com/coghost/sgr-ansi',
