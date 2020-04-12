@@ -41,7 +41,7 @@ def __register_styles():
 
     for sc in itertools.product(styles, colors):
         sc = ''.join(sc)
-        globals()[sc] = partial(__stylish, styles=sc)
+        globals()[sc] = partial(__stylish, formatter=sc)
         registered.append(sc)
 
 
@@ -50,39 +50,39 @@ def __reg_styles(styles, max_length, iter_type='combinations'):
     for i in range(max_length):
         for style in getattr(itertools, iter_type)(styles, i + 1):
             style = ''.join(style)
-            globals()[style] = partial(__stylish, styles=style)
+            globals()[style] = partial(__stylish, formatter=style)
             _reg.append(style)
             registered.append(style)
     return _reg
 
 
-def __stylish(*args, styles='B', end='', sep='', show=True):
-    orig_styles = styles
-    alias = '-'.join([HELPER.get(x, '') for x in styles])
+def __stylish(*args, formatter='B', sep='', end='', show=True):
+    alias = '-'.join([HELPER.get(x, '') for x in formatter])
 
-    colors = [x for x in styles if x > 'Z'][-2:]
+    # all colors are lowercase
+    colors = [x for x in formatter if x > 'Z'][-2:]
     colors = f'{__CSI__}'.join(
         [
             f'{_COLORS_.get(color) + i * 10}m' for i, color in enumerate(colors)
         ] or [f'{__DEFAULT_FG__}m']
     )
 
-    styles = sorted(styles)
-    styles = [x for x in styles if x <= 'Z']
-
+    # all styles are uppercase
+    styles = [x for x in formatter if x <= 'Z']
     styles = ';'.join([f'{_STYLES_.get(x, "")}' for x in styles] or [])
 
     _string = [*args]
+    # if no args, or with args, but args[0] is empty, use auto-gen style-alias
     if not args or not args[0]:
-        _string = [f'{orig_styles}: {alias}']
+        _string = [f'{formatter}: {alias}']
 
-    end = end or prt_style['end']
     sep = sep or prt_style['sep']
+    end = end or prt_style['end']
     if not show:
         return ''.join([f'{__CSI__}{styles};{colors}', *_string, f'{__CSI__}{__RESET__}'])
-    print(f'{__CSI__}{styles};{colors}', end='', sep='')
-    print(*_string, end='', sep=sep)
-    print(f'{__CSI__}{__RESET__}', end=end, sep='')
+    print(f'{__CSI__}{styles};{colors}', sep='', end='')
+    print(*_string, sep=sep, end='')
+    print(f'{__CSI__}{__RESET__}', sep='', end=end)
 
 
 def __gen_static_exported_styles__():
