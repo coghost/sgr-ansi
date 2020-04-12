@@ -1,11 +1,13 @@
 import getopt
 import os
 import sys
+import argparse
 
 app_root = '/'.join(os.path.abspath(__file__).split('/')[:-2])
 sys.path.append(app_root)
 
 import sgr_ansi as echo
+from sgr_ansi import Chain
 
 
 def show_all() -> None:
@@ -60,27 +62,41 @@ def search_styles(required_key='', required_len=None) -> None:
 
 
 def prt_usg():
-    echo.g(f'''USAGE: python {__file__} -s <style_color:Bg> -t <text> -k <search_key> -l <search_len>
-    ''')
-    echo.By('''two rules:
-    - styles require alphabet order
-    - styles go before colors
-    ''')
+    # echo.g(f'''USAGE: python {sys.argv[0]} -s <style_color:Bg> -t <text> -k <search_key> -l <search_len>
+    # ''')
+    echo.w(f"Usage: {sys.argv[0]} [-{'|-'.join('chapVstkl')}]")
+    Chain().w('\t[-a] show all styles').show()
+    Chain().w('\t[-c] show chained demo').show()
+    Chain().w('\t[-p] show demo styles').show()
+    Chain().w('\t[-s <style_color:Bg>]').show()
+    Chain().w('\t[-t <text>]').show()
+    Chain().w('\t[-k <key>] search a style with key, usually paired with -l').show()
+    Chain().w('\t[-l <showed_style_length>] show matched length styles').show()
+
     print()
-    echo.Bg('<STYLES>: use with alphabet order')
+    echo.Bg(f'<STYLES>: {list(echo.STYLE_HELPER.keys())}', end='\n\t')
     for k, v in echo.STYLE_HELPER.items():
-        echo.g(f'\t{k} == {v}')
+        getattr(echo, k)(f'{k} == {v}', end=', ')
     print()
-    echo.Bg('<COLORS>: <fg> on <bg>')
+    echo.Bg(f'<COLORS>: {list(echo.COLOR_HELPER.keys())}', end='\n\t')
     for k, v in echo.COLOR_HELPER.items():
-        echo.g(f'\t{k} == {v}')
+        getattr(echo, k)(f'{k} == {v}', end=', ')
+    print()
+    echo.By('''\ntwo rules:
+        - styles require alphabet order
+        - styles go before colors
+        ''')
     sys.exit(0)
 
 
-def main(argv):
+def main():
     opts = None
     try:
-        opts, args = getopt.getopt(argv, 'hapVs:t:k:l:', ['styles=', 'text=', 'all', 'key=', 'len='])
+        opts, args = getopt.getopt(
+            sys.argv[1:],
+            'chapVs:t:k:l:',
+            ['styles=', 'text=', 'all', 'key=', 'len=', 'chain']
+        )
     except getopt.GetoptError:
         prt_usg()
 
@@ -95,6 +111,11 @@ def main(argv):
             prt_usg()
         elif opt == '-p':
             print_demo()
+            sys.exit(0)
+        elif opt in ('-c', '--chain'):
+            Chain().BIy('Yep,').BIUb(
+                'How do you like this?'
+            ).Bm('\n\t[✔]').BUg('1.').Bg('Y: yes.').Bm('\n\t[✘]').BUr('2.').Br('N: not.').show()
             sys.exit(0)
         elif opt in ('-V', '--version'):
             echo.BI(f'sgr-ansi VERSION: {echo.VERSION}')
@@ -119,4 +140,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()

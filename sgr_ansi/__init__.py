@@ -1,6 +1,7 @@
 from sgr_ansi.ansi8 import *
+from sgr_ansi._chain import Chain
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 # use hard registered to avoid annoy warnings: `cannot find reference`
 hard_registered = [
     'B', 'D', 'I', 'S', 'U',
@@ -423,6 +424,7 @@ hard_registered = [
 
 __all__ = [
               'COLOR_HELPER',
+              'Chain',
               'HELPER',
               'STYLE_HELPER',
               'VERSION',
