@@ -8,6 +8,7 @@ bold.green_on_red
 
 from functools import partial
 import itertools
+from typing import List
 
 __CSI__ = '\x1b['
 __RESET__ = '0m'
@@ -35,22 +36,30 @@ def with_paragraph(on: bool = True, end='', sep='') -> None:
     __register_styles()
 
 
-def __register_styles():
-    styles = __reg_styles(_STYLES_, len(_STYLES_))
-    colors = __reg_styles(_COLORS_, 2, iter_type='permutations')
+def __register_styles(show=True) -> None:
+    styles = __reg_styles(_STYLES_, len(_STYLES_), show=show)
+    colors = __reg_styles(_COLORS_, 2, iter_type='permutations', show=show)
 
     for sc in itertools.product(styles, colors):
         sc = ''.join(sc)
-        globals()[sc] = partial(__stylish, formatter=sc)
+        if not show:
+            sc = sc.replace("_", "")
+        fn = partial(__stylish, formatter=sc, show=show)
+        if not show:
+            sc = f'{sc}_'
+        globals()[sc] = fn
         registered.append(sc)
 
 
-def __reg_styles(styles, max_length, iter_type='combinations'):
+def __reg_styles(styles, max_length, iter_type='combinations', show=True) -> List:
     _reg = []
     for i in range(max_length):
         for style in getattr(itertools, iter_type)(styles, i + 1):
             style = ''.join(style)
-            globals()[style] = partial(__stylish, formatter=style)
+            fn = partial(__stylish, formatter=style, show=show)
+            if not show:
+                style = f'{style}_'
+            globals()[style] = fn
             _reg.append(style)
             registered.append(style)
     return _reg
@@ -79,7 +88,7 @@ def __stylish(*args, formatter='B', sep='', end='', show=True):
     sep = sep or prt_style['sep']
     end = end or prt_style['end']
     if not show:
-        return ''.join([f'{__CSI__}{styles};{colors}', *_string, f'{__CSI__}{__RESET__}'])
+        return ''.join([f'{__CSI__}{styles};{colors}', ''.join([str(x) for x in _string]), f'{__CSI__}{__RESET__}'])
     print(f'{__CSI__}{styles};{colors}', sep='', end='')
     print(*_string, sep=sep, end='')
     print(f'{__CSI__}{__RESET__}', sep='', end=end)
@@ -91,6 +100,7 @@ def __gen_static_exported_styles__():
 
 
 __register_styles()
+__register_styles(False)
 
 if __name__ == '__main__':
     __gen_static_exported_styles__()

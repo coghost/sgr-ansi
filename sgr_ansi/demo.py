@@ -64,6 +64,7 @@ def search_styles(required_key='', required_len=None) -> None:
 def prt_usg():
     # echo.g(f'''USAGE: python {sys.argv[0]} -s <style_color:Bg> -t <text> -k <search_key> -l <search_len>
     # ''')
+    print()
     echo.w(f"Usage: {sys.argv[0]} [-{'|-'.join('chapVstkl')}]")
     Chain().w('\t[-a] show all styles').show()
     Chain().w('\t[-c] show chained demo').show()
@@ -86,6 +87,8 @@ def prt_usg():
         - styles require alphabet order
         - styles go before colors
         ''')
+    echo.BIrc(f"All styles with suffix (_) will only stylish the text. e.g.: Bg_('stylish only')")
+    print()
     sys.exit(0)
 
 
